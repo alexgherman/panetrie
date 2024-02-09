@@ -2,9 +2,11 @@
 
 Inspired by [pug](https://github.com/Ventto/pug) and [aptl](https://github.com/pegromdev/aptl).
 
+Documentation available [here](./docs/docs.md).
+
 ## :book: Usage
 
-For more detailed usage instructions, see [here](./docs/usage.md).
+:construction: Nothing here yet :construction:
 
 ## :repeat: Contributing
 

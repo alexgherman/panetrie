@@ -37,7 +37,7 @@ Panetrie shell script executable.
 
 Handy symlink pointing to `/usr/share/libalpm/hooks.bin/panetrie` to expose panetrie without specifying the full path.
 
-### Usage
+### :book: Usage
 
 :construction: Nothing here yet :construction:
 

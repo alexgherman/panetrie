@@ -1,4 +1,4 @@
-# Contributing guide
+# :repeat: Contributing guide
 
 ### Testing
 
