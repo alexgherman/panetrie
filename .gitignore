@@ -5,11 +5,10 @@
 !docs
 !docs/CONTRIBUTING.md
 !docs/docs.md
-!docs/faq.md
 
 !Makefile
 !README.md
-
+!PKGBUILD
 
 !src
 !src/panetrie.hook
