@@ -181,18 +181,18 @@ main() {
         init-config)
 
             if [ -f ${DEFAULT_CONFIG_PATH} ]; then
-                echo "Configuration file [${DEFAULT_CONFIG_PATH}] already exists."
+                echo "${red}Configuration file [${DEFAULT_CONFIG_PATH}] already exists.${normal}"
                 read -p "Would you like to reset to default settings? [y/N] " -n 1 -r
                 echo
                 if [[ $REPLY =~ ^[Yy]$ ]]; then
                     initConfig ${DEFAULT_CONFIG_PATH}
-                    echo "Config re-initialized. Happy usage."
+                    echo "Config [${DEFAULT_CONFIG_PATH}] re-initialized. Happy usage."
                 else
                     echo "Aborting... Nothing happened."
                 fi
             else
                 initConfig ${DEFAULT_CONFIG_PATH}
-                echo "Config initialized. Happy usage."
+                echo "Config [${DEFAULT_CONFIG_PATH}] initialized. Happy usage."
             fi
             ;;
         "")
