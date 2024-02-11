@@ -110,7 +110,7 @@ install() {
 }
 
 cleanup() {
-    echo "Attempting to clean up previous version dumps..."
+    echo "Attempting to clean up previous package list dumps..."
 
     local cleaned=0
     if [ -f ${native_packages_path} ]; then
@@ -124,7 +124,7 @@ cleanup() {
     fi
 
     if [ $cleaned -gt 0 ]; then
-        echo "Done. ${cleaned} files removed. Goodbye!"
+        echo "Done. ${cleaned} dumps removed. Goodbye!"
     else
         echo "No files to clean up. Goodbye!"
     fi
