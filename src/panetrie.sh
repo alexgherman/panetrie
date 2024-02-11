@@ -132,7 +132,9 @@ config() {
     if [ -n "$CONFIG_FILE" ]; then
         echo "Current configuration values based on [${CONFIG_FILE}]"
     else
-        echo "No configuration file provided. Using default values"
+        echo "No configuration file provided. Using default values."
+        echo "To customize run:"
+        echo "mkdir -p /etc/panetrie && cp /usr/share/panetrie/panetrie.conf.example /etc/panetrie/panetrie.conf"
     fi
     print_current_config
 }
