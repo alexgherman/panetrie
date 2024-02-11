@@ -40,7 +40,7 @@ fi
 if [ -f ${CONFIG_FILE} ]; then
     source ${CONFIG_FILE}
 else
-    unset ${CONFIG_FILE}
+    unset CONFIG_FILE
 fi
 
 : "${native_packages_path:=$DEFAULT_NATIVE_PACKAGES_PATH}"
