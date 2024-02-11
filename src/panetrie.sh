@@ -37,7 +37,9 @@ if [ -n "$CONFIG_FILE" ]; then
 fi
 
 : "${CONFIG_FILE:=$DEFAULT_CONFIG_FILE}"
-source ${CONFIG_FILE}
+if [ -f ${CONFIG_FILE} ]; then
+    source ${CONFIG_FILE}
+fi
 
 : "${native_packages_path:=$DEFAULT_NATIVE_PACKAGES_PATH}"
 : "${foreign_packages_path:=$DEFAULT_FOREIGN_PACKAGES_PATH}"
