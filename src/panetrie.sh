@@ -122,7 +122,11 @@ cleanup() {
         cleaned=$((cleaned + 1))
         rm ${foreign_packages_path}
     fi
-    
+
+    if [ -f ${CONFIG_PATH} ]; then
+        cleaned=$((cleaned + 1))
+        rm ${CONFIG_PATH}
+    fi
 
     if [ $cleaned -gt 0 ]; then
         echo "Done. ${cleaned} dumps removed. Goodbye!"
