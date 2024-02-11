@@ -22,25 +22,27 @@ magenta="$(tput setaf 5)"
 cyan="$(tput setaf 6)"
 white="$(tput setaf 7)"
 
+CONFIG_EXAMPLE_PATH=/usr/share/panetrie/panetrie.conf.example
+
 BASEDIR=$(dirname "$(readlink -f "$0")")
 
-DEFAULT_CONFIG_FILE="/etc/panetrie/panetrie.conf"
+DEFAULT_CONFIG_PATH="/etc/panetrie/panetrie.conf"
 
 DEFAULT_NATIVE_PACKAGES_PATH=/tmp/pacman.list
 DEFAULT_FOREIGN_PACKAGES_PATH=/tmp/aur.list
 DEFAULT_PACKAGE_VERSIONS=1
 
-if [ -n "$CONFIG_FILE" ]; then
+if [ -n "$CONFIG_PATH" ]; then
     echo "${bold}${green}==>${normal} Custom configuration file path provided"
-    CONFIG_FILE=$([[ $CONFIG_FILE = /* ]] && echo $CONFIG_FILE || echo $(realpath "${BASEDIR}/${CONFIG_FILE}"))
-    echo "${green}${bold} -> ${yellow}CONFIG_FILE${normal}=${cyan}${CONFIG_FILE}${normal}"
+    CONFIG_PATH=$([[ $CONFIG_PATH = /* ]] && echo $CONFIG_PATH || echo $(realpath "${BASEDIR}/${CONFIG_PATH}"))
+    echo "${green}${bold} -> ${yellow}CONFIG_PATH${normal}=${cyan}${CONFIG_PATH}${normal}"
 fi
 
-: "${CONFIG_FILE:=$DEFAULT_CONFIG_FILE}"
-if [ -f ${CONFIG_FILE} ]; then
-    source ${CONFIG_FILE}
+: "${CONFIG_PATH:=$DEFAULT_CONFIG_PATH}"
+if [ -f ${CONFIG_PATH} ]; then
+    source ${CONFIG_PATH}
 else
-    unset CONFIG_FILE
+    unset CONFIG_PATH
 fi
 
 : "${native_packages_path:=$DEFAULT_NATIVE_PACKAGES_PATH}"
@@ -120,6 +122,7 @@ cleanup() {
         cleaned=$((cleaned + 1))
         rm ${foreign_packages_path}
     fi
+    
 
     if [ $cleaned -gt 0 ]; then
         echo "Done. ${cleaned} dumps removed. Goodbye!"
@@ -129,14 +132,19 @@ cleanup() {
 }
 
 config() {
-    if [ -n "$CONFIG_FILE" ]; then
-        echo "Current configuration values based on [${CONFIG_FILE}]"
+    if [ -n "$CONFIG_PATH" ]; then
+        echo "Current configuration values based on [${CONFIG_PATH}]"
     else
         echo "No configuration file provided. Using default values."
         echo "To customize run:"
-        echo "mkdir -p /etc/panetrie && cp /usr/share/panetrie/panetrie.conf.example /etc/panetrie/panetrie.conf"
+        echo "panetrie init-config"
     fi
     print_current_config
+}
+
+initConfig() {
+    mkdir -p $(dirname $1)
+    cp ${CONFIG_EXAMPLE_PATH} $1
 }
 
 usage() {
@@ -160,6 +168,20 @@ main() {
             ;;
         config)
             config
+            ;;
+        init-config)
+
+            if [ -f ${DEFAULT_CONFIG_PATH} ]; then
+                echo "Configuration file [${DEFAULT_CONFIG_PATH}] already exists."
+                read -p "Would you like to reset to default settings? [y/N] " -n 1 -r
+                echo
+                if [[ $REPLY =~ ^[Yy]$ ]]; then
+                    initConfig ${DEFAULT_CONFIG_PATH}
+                    echo "Config re-initialized. Happy usage."
+                else
+                    echo "Aborting... Nothing happened."
+                fi
+            fi
             ;;
         "")
             if ! [ -f ${native_packages_path} ] && ! [ -f ${foreign_packages_path} ]; then
