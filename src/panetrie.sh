@@ -86,7 +86,7 @@ print_config_line_item() {
     print_padded "${green}${bold} -> ${yellow}${name}${normal}" "[${magenta}$var_name${normal} = ${cyan}${!var_name}${normal}]" "${status}"
 }
 
-print_config() {
+print_current_config() {
     hr Configuration
     print_config_line_item "Native packages" native_packages_path
     print_config_line_item "Foreign packages" foreign_packages_path
@@ -106,8 +106,7 @@ refresh() {
 
 install() {
     greeting
-    echo "Current configuration values based on [${CONFIG_FILE}]"
-    print_config
+    config
 }
 
 cleanup() {
@@ -131,6 +130,15 @@ cleanup() {
     fi
 }
 
+config() {
+    if [ -n "$CONFIG_FILE" ]; then
+        echo "Current configuration values based on [${CONFIG_FILE}]"
+    else
+        echo "No configuration file provided. Using default values"
+    fi
+    print_current_config
+}
+
 usage() {
     echo "Usage: panetrie [refresh|install|cleanup]"
     echo "🚧 under construction 🚧"
@@ -149,6 +157,9 @@ main() {
 
         cleanup)
             cleanup
+            ;;
+        config)
+            config
             ;;
         "")
             if ! [ -f ${native_packages_path} ] && ! [ -f ${foreign_packages_path} ]; then
