@@ -128,6 +128,10 @@ cleanup() {
         rm ${CONFIG_PATH}
     fi
 
+    if [ -d $(dirname $CONFIG_PATH) ]; then
+        rm -d $(dirname $CONFIG_PATH)
+    fi
+
     if [ $cleaned -gt 0 ]; then
         echo "Done. ${cleaned} dumps removed. Goodbye!"
     else
@@ -140,14 +144,15 @@ config() {
         echo "Current configuration values based on [${CONFIG_PATH}]"
     else
         echo "No configuration file provided. Using default values."
+        # sudo needed because touching files under /etc
         echo "To customize run: $ sudo panetrie init-config"
     fi
     print_current_config
 }
 
 initConfig() {
-    sudo mkdir -p $(dirname $1)
-    sudo cp ${CONFIG_EXAMPLE_PATH} $1
+    mkdir -p $(dirname $1)
+    cp ${CONFIG_EXAMPLE_PATH} $1
 }
 
 usage() {
