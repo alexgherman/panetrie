@@ -37,12 +37,6 @@ if [ -n "$CONFIG_FILE" ]; then
 fi
 
 : "${CONFIG_FILE:=$DEFAULT_CONFIG_FILE}"
-
-if ! [ -f $CONFIG_FILE ]; then
-    echo "${red}${bold}==> ERROR: Configuration file does not exist [${CONFIG_FILE}]${normal}"
-    exit 1
-fi
-
 source ${CONFIG_FILE}
 
 : "${native_packages_path:=$DEFAULT_NATIVE_PACKAGES_PATH}"
