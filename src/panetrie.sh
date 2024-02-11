@@ -140,14 +140,14 @@ config() {
         echo "Current configuration values based on [${CONFIG_PATH}]"
     else
         echo "No configuration file provided. Using default values."
-        echo "To customize run: $ panetrie init-config"
+        echo "To customize run: $ sudo panetrie init-config"
     fi
     print_current_config
 }
 
 initConfig() {
-    mkdir -p $(dirname $1)
-    cp ${CONFIG_EXAMPLE_PATH} $1
+    sudo mkdir -p $(dirname $1)
+    sudo cp ${CONFIG_EXAMPLE_PATH} $1
 }
 
 usage() {
