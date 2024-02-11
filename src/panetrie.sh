@@ -140,8 +140,7 @@ config() {
         echo "Current configuration values based on [${CONFIG_PATH}]"
     else
         echo "No configuration file provided. Using default values."
-        echo "To customize run:"
-        echo "panetrie init-config"
+        echo "To customize run: $ panetrie init-config"
     fi
     print_current_config
 }
@@ -185,6 +184,8 @@ main() {
                 else
                     echo "Aborting... Nothing happened."
                 fi
+            else
+                initConfig ${DEFAULT_CONFIG_PATH}
             fi
             ;;
         "")
