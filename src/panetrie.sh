@@ -1,6 +1,16 @@
 #!/bin/sh
 
-# TODO: does ncurses need to be an explicit dependency?
+greeting() {
+    cat << EOF
+██████╗  █████╗ ███╗   ██╗███████╗██████╗ ████████╗██████╗ ██╗███████╗
+██╔══██╗██╔══██╗████╗  ██║██╔════╝██╔══██╗╚══██╔══╝██╔══██╗██║██╔════╝
+██████╔╝███████║██╔██╗ ██║█████╗  ██████╔╝   ██║   ██████╔╝██║█████╗  
+██╔═══╝ ██╔══██║██║╚██╗██║██╔══╝  ██╔══██╗   ██║   ██╔══██╗██║██╔══╝  
+██║     ██║  ██║██║ ╚████║███████╗██║  ██║   ██║   ██║  ██║██║███████╗
+╚═╝     ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚══════╝
+                                                                      
+EOF
+}
 
 normal="$(tput sgr0)"
 bold="$(tput bold)"
@@ -14,10 +24,11 @@ white="$(tput setaf 7)"
 
 BASEDIR=$(dirname "$(readlink -f "$0")")
 
-# Default variables
 DEFAULT_CONFIG_FILE="/etc/panetrie/panetrie.conf"
-DEFAULT_NATIVE_FILENAME=pacman.list
-DEFAULT_FOREIGN_FILENAME=aur.list
+
+DEFAULT_NATIVE_PACKAGES_PATH=/tmp/pacman.list
+DEFAULT_FOREIGN_PACKAGES_PATH=/tmp/aur.list
+DEFAULT_PACKAGE_VERSIONS=1
 
 if [ -n "$CONFIG_FILE" ]; then
     echo "${bold}${green}==>${normal} Custom configuration file path provided"
@@ -34,8 +45,9 @@ fi
 
 source ${CONFIG_FILE}
 
-: "${native_filename:=$DEFAULT_NATIVE_FILENAME}"
-: "${foreign_filename:=$DEFAULT_FOREIGN_FILENAME}"
+: "${native_packages_path:=$DEFAULT_NATIVE_PACKAGES_PATH}"
+: "${foreign_packages_path:=$DEFAULT_FOREIGN_PACKAGES_PATH}"
+: "${package_versions:=$DEFAULT_PACKAGE_VERSIONS}"
 
 hr() {
     local total=$(tput cols)
@@ -67,20 +79,87 @@ print_padded() {
     printf ' %s\n' "$right"
 }
 
-print_config_status() {
+print_config_line_item() {
     local name=$1
     local var_name=$2
     local status=$([[ "${!var_name}" = "0" ]] && echo "${red}${bold}[DISABLED]${normal}" || echo "${green}${bold}[ENABLED]${normal}")
     print_padded "${green}${bold} -> ${yellow}${name}${normal}" "[${magenta}$var_name${normal} = ${cyan}${!var_name}${normal}]" "${status}"
 }
 
+print_config() {
+    hr Configuration
+    print_config_line_item "Native packages" native_packages_path
+    print_config_line_item "Foreign packages" foreign_packages_path
+    print_config_line_item "Package versions" package_versions
+    hr
+}
 
-hr Configuration
-print_config_status "Native packages" native_filename
-print_config_status "Foreign packages" foreign_filename
-print_config_status "Package versions" package_versions
-hr
+refresh() {
+    echo "refreshing..."
 
-pacman_cmd="pacman -Qe$([ "${package_versions}" = "0" ] && echo 'q' || echo '')"
-eval "${pacman_cmd}n" > /tmp/pacman.list
-eval "${pacman_cmd}m" > /tmp/aur.list
+    # TODO check permissions on these paths before doing anything
+
+    pacman_cmd="pacman -Qe$([ "${package_versions}" = "0" ] && echo 'q' || echo '')"
+    eval "${pacman_cmd}n" > ${native_packages_path}
+    eval "${pacman_cmd}m" > ${foreign_packages_path}
+}
+
+install() {
+    greeting
+    echo "Current configuration values based on [${CONFIG_FILE}]"
+    print_config
+}
+
+cleanup() {
+    echo "Attempting to clean up previous version dumps..."
+
+    local cleaned=0
+    if [ -f ${native_packages_path} ]; then
+        cleaned++
+        rm ${native_packages_path}
+    fi
+
+    if [ -f ${foreign_packages_path} ]; then
+        cleaned++
+        rm ${foreign_packages_path}
+    fi
+
+    if [ $cleaned -gt 0 ]; then
+        echo "Done. ${cleaned} files removed. Goodbye!"
+    else
+        echo "No files to clean up. Goodbye!"
+    fi
+}
+
+usage() {
+    echo "Usage: panetrie [refresh|install|cleanup]"
+    echo "🚧 under construction 🚧"
+}
+
+main() {
+
+    case $1 in
+        refresh)
+            refresh
+            ;;
+        install)
+            install
+            refresh
+            ;;
+
+        cleanup)
+            cleanup
+            ;;
+        "")
+            if [ -f ${native_packages_path} ] || [ -f ${foreign_packages_path} ]; then
+                install
+            fi
+            refresh
+            ;;
+        *)
+            usage
+            ;;
+    esac
+}
+
+main "$@"
