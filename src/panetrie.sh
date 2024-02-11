@@ -115,12 +115,12 @@ cleanup() {
 
     local cleaned=0
     if [ -f ${native_packages_path} ]; then
-        cleaned++
+        cleaned=$((cleaned + 1))
         rm ${native_packages_path}
     fi
 
     if [ -f ${foreign_packages_path} ]; then
-        cleaned++
+        cleaned=$((cleaned + 1))
         rm ${foreign_packages_path}
     fi
 
