@@ -10,18 +10,26 @@ Here is the breakdown of files:
 │       └─── panetrie.conf
 ├── usr
 │   ├── share
-│   │   └── libalpm
-│   │       ├── hooks
-│   │       │   └─── panetrie.hook
-│   │       └── scripts
-│   │           └─── panetrie
+│   │   ├── libalpm
+│   │   │   ├── hooks
+│   │   │   │   └─── panetrie.hook
+│   │   │   └── scripts
+│   │   │       └─── panetrie
+│   │   └── panetrie
+│   │       └── panetrie.conf.example
 │   └── bin
 │       └─── panetrie -> /usr/share/libalmp/hooks.bin/panetrie
 ```
 
 #### /etc/panetrie/panetrie.conf
 
-Glorified bash configuration file containing all available config options. Use this file to configure panetrie based on your specific workflow.
+Configuration file used to customize panetrie. Use this file to configure panetrie based on your specific workflow. An example is provided in `/usr/share/panetrie/panetrie.conf.example`.
+
+To customize, either manually copy this file to `/etc/panetrie/panetrie.conf` or run `$ panetrie init-config` and go through the steps.
+
+#### /usr/share/panetrie/panetrie.conf.example
+
+Example configuration file containing all available customization options.
 
 #### /usr/share/libalpm/hooks/panetrie.hook
 
