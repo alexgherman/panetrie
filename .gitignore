@@ -9,6 +9,7 @@
 !Makefile
 !README.md
 !PKGBUILD
+!LICENSE
 
 !src
 !src/panetrie.hook
